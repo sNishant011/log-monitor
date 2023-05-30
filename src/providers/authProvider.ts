@@ -49,11 +49,11 @@ export const authProvider: AuthBindings = {
   },
   check: async () => {
     const userLocal = localStorage.getItem(USER_KEY);
-    if (userLocal && JSON.parse(userLocal))
-      return {
-        authenticated: true,
+    if (userLocal && JSON.parse(userLocal)){
+        return {
+          authenticated: true,
+      }
     }
-
     return {
       authenticated: false,
       redirectTo: "/login",
@@ -61,18 +61,19 @@ export const authProvider: AuthBindings = {
   },
   getPermissions: async () => null,
   getIdentity: async () => {
-    return axiosInstance.get<User>("/users/profile").then((response) => {
-      return response.data;
-    }).catch(() => {
-      localStorage.removeItem(USER_KEY);
-      return {
-        authenticated: false,
-        redirectTo: "/login",
-      };
-    });
+    const userLocal = localStorage.getItem(USER_KEY);
+    if (userLocal && JSON.parse(userLocal)){
+      return Promise.resolve(JSON.parse(userLocal));
+    }else{
+      return axiosInstance.get<User>("/users/profile").then(response => {
+        localStorage.setItem(USER_KEY, JSON.stringify(response.data));
+        return response.data;
+      }).catch(err => {
+          return Promise.reject(err);
+      });
+    }
   },
   onError: async (error) => {
-    console.error(error);
     return { error };
   },
 };

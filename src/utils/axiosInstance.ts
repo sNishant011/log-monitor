@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_URL } from '../constants';
+import { API_URL, USER_KEY } from '../constants';
 
 const axiosInstance = axios.create({
   baseURL: API_URL,
@@ -9,13 +9,19 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.response.use(
   (response) => response,
   async (error) => {
-    console.log(error)
     const config = error?.config;
-    console.log(error.response.status)
+    console.log(config.sent)
     if (error?.response?.status === 401 && !config?.sent) {
       config.sent = true;
-      await axiosInstance.post(`/auth/refresh/`);
-      return axiosInstance(config);
+      try{
+        await axios.get(`${API_URL}/auth/refresh/`, {
+          withCredentials: true
+        });
+        return axiosInstance(config);
+      }catch(err){
+        localStorage.removeItem(USER_KEY);
+        return Promise.reject(error)
+      }
     }
     return Promise.reject(error);
   }
