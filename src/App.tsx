@@ -1,11 +1,11 @@
-import { Authenticated,  Refine } from "@refinedev/core";
+import { Authenticated, Refine } from "@refinedev/core";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
 
 import { notificationProvider, ThemedLayoutV2 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
 import routerBindings, {
-    CatchAllNavigate,
+  CatchAllNavigate,
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router-v6";
@@ -23,9 +23,9 @@ import { UserEdit } from "./pages/users/edit";
 import { UserShow } from "./pages/users/show";
 import { UserCreate } from "./pages/users/create";
 import Title from "./components/title";
+import { Dashboard } from "./pages/dashboard";
 
 function App() {
-
   return (
     <BrowserRouter>
       <RefineKbarProvider>
@@ -37,55 +37,68 @@ function App() {
             authProvider={authProvider}
             resources={[
               {
+                name: "Logs",
+              },
+              {
+                name: "apache-logs",
+                parentName: "Logs",
+                list: "/logs/apache",
+                options: {
+                  label: "Apache Logs",
+                },
+              },
+              {
+                name: "nginx-logs",
+                parentName: "Logs",
+                list: "/logs/nginx",
+                options: {
+                  label: "Nginx Logs",
+                },
+              },
+              {
                 name: "users",
                 list: "/users",
                 create: "/users/create",
                 show: "/users/show/:id",
                 edit: "/users/edit/:id",
-              }
+              },
             ]}
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
             }}
           >
-<Routes>
-                        <Route
-                            element={
-                                <Authenticated
-                                    fallback={<CatchAllNavigate to="/login" />}
-                                >
-                                    <ThemedLayoutV2 Title={Title}  Header={Header}>
-                                        <Outlet />
-                                    </ThemedLayoutV2>
-                                </Authenticated>
-                            }
-                        >
-                            <Route index element={<NavigateToResource />} />
-                            <Route path="/users" element={<UsersList />} />
-                            <Route path="/users/show/:id" element={<UserShow />} />
-                            <Route path="/users/edit/:id" element={<UserEdit />} />
-                            <Route path="/users/create" element={<UserCreate />} />
-                        </Route>
-                        <Route
-                            element={
-                                <Authenticated fallback={<Outlet />}>
-                                    <NavigateToResource resource="users" />
-                                </Authenticated>
-                            }
-                        >
-                            <Route
-                                path="/login"
-                                element={<Login/>}
-                            />
-                            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Routes>
+              <Route
+                element={
+                  <Authenticated fallback={<CatchAllNavigate to="/login" />}>
+                    <ThemedLayoutV2 Title={Title} Header={Header}>
+                      <Outlet />
+                    </ThemedLayoutV2>
+                  </Authenticated>
+                }
+              >
+                <Route index element={<NavigateToResource />} />
+                <Route path="/users" element={<UsersList />} />
+                <Route path="/users/show/:id" element={<UserShow />} />
+                <Route path="/users/edit/:id" element={<UserEdit />} />
+                <Route path="/users/create" element={<UserCreate />} />
+                <Route path="/logs/:serverType" element={<Dashboard />} />
+                <Route path="*" element={<h1>You&apos;re lost</h1>} />
+              </Route>
+              <Route
+                element={
+                  <Authenticated fallback={<Outlet />}>
+                    <NavigateToResource resource="users" />
+                  </Authenticated>
+                }
+              >
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
 
-                            <Route
-                                path="/register"
-                                element={<Register/>}
-                            />
-                        </Route>
-                    </Routes>
+                <Route path="/register" element={<Register />} />
+              </Route>
+            </Routes>
             <RefineKbar />
             <UnsavedChangesNotifier />
           </Refine>

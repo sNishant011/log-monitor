@@ -2,20 +2,23 @@ import { Col, Form, FormProps, Input, Row, Select } from "antd";
 import { useWatch } from "antd/es/form/Form";
 import { User } from "../types";
 
-const UserForm = ({formProps, mode}: {formProps: FormProps<User>, mode?: "create" | "edit"}) => {
-  const password = useWatch('password', formProps.form);
-  const customOnFinish = (values: User & {confirmPassword?: string}) => {
-  delete values.confirmPassword;
-  delete values._id;
+const UserForm = ({
+  formProps,
+  mode,
+}: {
+  formProps: FormProps<User>;
+  mode?: "create" | "edit";
+}) => {
+  const password = useWatch("password", formProps.form);
+  const customOnFinish = (values: User & { confirmPassword?: string }) => {
+    delete values.confirmPassword;
+    delete values._id;
     if (formProps.onFinish) {
       formProps.onFinish(values);
     }
   };
   return (
-
-        <Form {...formProps} layout="vertical"
-      onFinish={customOnFinish}
-    >
+    <Form {...formProps} layout="vertical" onFinish={customOnFinish}>
       <Row gutter={5}>
         <Col span={24} md={12}>
           <Form.Item
@@ -37,7 +40,6 @@ const UserForm = ({formProps, mode}: {formProps: FormProps<User>, mode?: "create
             <Input type={"email"} />
           </Form.Item>
         </Col>
-
 
         <Col span={24} md={8}>
           <Form.Item
@@ -105,10 +107,8 @@ const UserForm = ({formProps, mode}: {formProps: FormProps<User>, mode?: "create
           </Form.Item>
         </Col>
       </Row>
-
-
-            </Form>
-  )
-}
+    </Form>
+  );
+};
 
 export default UserForm;

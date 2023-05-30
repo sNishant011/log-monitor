@@ -6,8 +6,8 @@ import axiosInstance from "../utils/axiosInstance";
 export const CustomDataProvider = (
   apiUrl?: string,
   httpClient: AxiosInstance = axiosInstance,
-): Omit< Required<DataProvider>, "createMany" | "custom" | "updateMany" | "deleteMany" >  => ({
-  getList: async ({ resource, filters })=> {
+): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => ({
+  getList: async ({ resource, filters }) => {
     const filter: LogicalFilter = filters?.at(0) as LogicalFilter;
     let url;
     if (filter) {
@@ -17,9 +17,9 @@ export const CustomDataProvider = (
     }
     const { data } = await httpClient.get(url);
     return {
-        data,
-        total: data.length,
-      };
+      data,
+      total: data.length,
+    };
   },
   create: async ({ resource, variables }) => {
     const url = `/${resource}/`;
@@ -57,9 +57,7 @@ export const CustomDataProvider = (
 
     const { data } = await httpClient.get(url);
 
-    return {
-      data,
-    };
+    return { data };
   },
   update: async ({ resource, id, variables }) => {
     const url = `/${resource}/${id}/`;
@@ -85,5 +83,9 @@ export const CustomDataProvider = (
     const { data } = await httpClient.get(url);
 
     return { data };
+  },
+
+  custom: ({ url }) => {
+    return axiosInstance.get(url);
   },
 });

@@ -5,11 +5,10 @@ import { User } from "../../types";
 import UserForm from "../../forms/UserForm";
 
 export const UserEdit: React.FC<IResourceComponentsProps> = () => {
-    const { formProps, saveButtonProps } = useForm<User, HttpError, User>();
-    return (
-        <Edit saveButtonProps={saveButtonProps}>
-          <UserForm formProps={formProps} mode="edit"/>
-        </Edit>
-    );
+  const { formProps, saveButtonProps } = useForm<User, HttpError, User>();
+  return (
+    <Edit saveButtonProps={saveButtonProps}>
+      <UserForm formProps={formProps} mode="edit" />
+    </Edit>
+  );
 };
-
