@@ -1,5 +1,5 @@
 import { Card, Col, Divider, Row, Spin, Statistic } from "antd";
-import { Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import CountUp from "react-countup";
 import { HttpError, useCustom } from "@refinedev/core";
 import { prettyResponse } from "../../types";
@@ -7,6 +7,7 @@ import PieChart from "../../components/visualizations/PieChart";
 import BarChart from "../../components/visualizations/BarChart";
 import Title from "antd/es/typography/Title";
 import LineGraph from "../../components/visualizations/LineGraph";
+import "./style.scss";
 
 const formatter = (value: number) => <CountUp end={value} separator="," />;
 
@@ -14,7 +15,7 @@ export const Dashboard = () => {
   const { serverType } = useParams();
   const { data } = useCustom<prettyResponse, HttpError>({
     method: "get",
-    url: "apache-logs/pretty",
+    url: `${serverType}-logs/pretty`,
   });
   if (serverType && serverType !== "nginx" && serverType !== "apache") {
     return <Navigate to={"/404"} />;
@@ -24,7 +25,10 @@ export const Dashboard = () => {
   }
   return (
     <div className="dashboard">
-      <Title>{serverType === "apache" ? "Apache Logs" : "Nginx Logs"}</Title>
+      <div className="content_head">
+        <Title>{serverType === "apache" ? "Apache Logs" : "Nginx Logs"}</Title>
+        <Link to={`/logs/${serverType}/raw`}>View Raw</Link>
+      </div>
       <Row gutter={16} style={{ maxWidth: "600px" }}>
         <Col span={24} md={12}>
           <Card bordered={false}>
@@ -47,11 +51,11 @@ export const Dashboard = () => {
         </Col>
       </Row>
       <Divider />
-      <Title level={3}>IP Address</Title>
+      <Title level={3}>Most common IP Address</Title>
       <Row gutter={16}>
         <Col span={24} md={12}>
           <Card bordered={false}>
-            <PieChart data={data?.data.mostCommonIP.slice(0, 6)} title={"IP Address"} />
+            <PieChart data={data?.data.mostCommonIP} title={"IP Address"} />
           </Card>
         </Col>
         <Col span={24} md={12}>

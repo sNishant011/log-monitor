@@ -24,6 +24,7 @@ import { UserShow } from "./pages/users/show";
 import { UserCreate } from "./pages/users/create";
 import Title from "./components/title";
 import { Dashboard } from "./pages/dashboard";
+import { RawLogList } from "./pages/raw-logs/list";
 
 function App() {
   return (
@@ -37,22 +38,47 @@ function App() {
             authProvider={authProvider}
             resources={[
               {
-                name: "Logs",
-              },
-              {
                 name: "apache-logs",
-                parentName: "Logs",
-                list: "/logs/apache",
                 options: {
                   label: "Apache Logs",
                 },
               },
               {
+                name: "dashboard",
+                list: "/logs/apache",
+                parentName: "apache-logs",
+                options: {
+                  label: "Dashboard",
+                },
+              },
+              {
+                parentName: "apache-logs",
+                name: "apache-logs",
+                list: "/logs/apache/raw",
+                options: {
+                  label: "Raw Logs",
+                },
+              },
+              {
                 name: "nginx-logs",
-                parentName: "Logs",
-                list: "/logs/nginx",
                 options: {
                   label: "Nginx Logs",
+                },
+              },
+              {
+                name: "dashboard",
+                parentName: "nginx-logs",
+                list: "/logs/nginx",
+                options: {
+                  label: "Dashboard",
+                },
+              },
+              {
+                parentName: "nginx-logs",
+                name: "nginx-logs",
+                list: "/logs/nginx/raw",
+                options: {
+                  label: "Raw Logs",
                 },
               },
               {
@@ -84,6 +110,7 @@ function App() {
                 <Route path="/users/edit/:id" element={<UserEdit />} />
                 <Route path="/users/create" element={<UserCreate />} />
                 <Route path="/logs/:serverType" element={<Dashboard />} />
+                <Route path="/logs/:serverType/raw" element={<RawLogList />} />
                 <Route path="*" element={<h1>You&apos;re lost</h1>} />
               </Route>
               <Route
