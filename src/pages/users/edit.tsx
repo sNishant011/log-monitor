@@ -10,7 +10,7 @@ export const UserEdit: React.FC<IResourceComponentsProps> = () => {
 
   const canAccess = useCan({
     resource: "user",
-    action: "list",
+    action: "edit",
   });
 
   if (canAccess.data && !canAccess.data?.can) {
