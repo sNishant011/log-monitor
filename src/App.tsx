@@ -21,12 +21,14 @@ import { CustomDataProvider } from "./providers/dataProvider";
 import { UserEdit } from "./pages/users/edit";
 import { UserShow } from "./pages/users/show";
 import { UserCreate } from "./pages/users/create";
-import { Dashboard } from "./pages/dashboard";
-import { RawLogList } from "./pages/raw-logs/list";
 import { ThemedSiderV2 } from "./components/themedLayout/sider";
 import Title from "./components/themedLayout/title";
 import { Header } from "./components/themedLayout";
 import { accessControlProvider } from "./providers/accessControlProvider";
+import { NginxLogList } from "./pages/nginx/list";
+import { ApacheLogList } from "./pages/apache/list";
+import { NginxDashboard } from "./pages/nginx/dashboard";
+import { ApacheDashboard } from "./pages/apache/dashboard";
 
 function App() {
   return (
@@ -112,8 +114,10 @@ function App() {
                 <Route path="/users/show/:id" element={<UserShow />} />
                 <Route path="/users/edit/:id" element={<UserEdit />} />
                 <Route path="/users/create" element={<UserCreate />} />
-                <Route path="/logs/:serverType" element={<Dashboard />} />
-                <Route path="/logs/:serverType/raw" element={<RawLogList />} />
+                <Route path="/logs/nginx" element={<NginxDashboard />} />
+                <Route path="/logs/apache" element={<ApacheDashboard />} />
+                <Route path="/logs/nginx/raw" element={<NginxLogList />} />
+                <Route path="/logs/apache/raw" element={<ApacheLogList />} />
                 <Route path="*" element={<h1>You&apos;re lost</h1>} />
               </Route>
               <Route

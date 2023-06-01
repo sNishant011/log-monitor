@@ -27,3 +27,9 @@ export const getCurrentUser = async () => {
     return Promise.resolve(user);
   }
 };
+
+export const dashboardHeaderStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+};

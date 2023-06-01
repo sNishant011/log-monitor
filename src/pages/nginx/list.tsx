@@ -22,7 +22,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { LogDocument } from "../../types";
 
-export const RawLogList: React.FC<IResourceComponentsProps> = () => {
+export const NginxLogList: React.FC<IResourceComponentsProps> = () => {
   const { tableProps, searchFormProps } = useTable<
     LogDocument,
     HttpError,
@@ -35,7 +35,6 @@ export const RawLogList: React.FC<IResourceComponentsProps> = () => {
     onSearch: (params) => {
       const filters: CrudFilters = [];
       const { timestamp, ipAddress } = params;
-      console.log(ipAddress);
 
       const shortMonth = timestamp?.toDate().toLocaleString("en-US", { month: "short" });
       filters.push({
@@ -43,20 +42,21 @@ export const RawLogList: React.FC<IResourceComponentsProps> = () => {
         operator: "eq",
         value: ipAddress,
       });
+      if (timestamp) {
+        const requiredTimestampFormat = `${timestamp
+          ?.date()
+          .toString()
+          .padStart(2, "0")}/${shortMonth}/${timestamp?.year()}:${timestamp
+          ?.hour()
+          .toString()
+          .padStart(2, "0")}:${timestamp?.minute().toString().padStart(2, "0")}`;
 
-      const requiredTimestampFormat = `${timestamp
-        ?.date()
-        .toString()
-        .padStart(2, "0")}/${shortMonth}/${timestamp?.year()}:${timestamp
-        ?.hour()
-        .toString()
-        .padStart(2, "0")}:${timestamp?.minute().toString().padStart(2, "0")}`;
-
-      filters.push({
-        field: "date",
-        operator: "eq",
-        value: requiredTimestampFormat,
-      });
+        filters.push({
+          field: "date",
+          operator: "eq",
+          value: requiredTimestampFormat,
+        });
+      }
       return filters;
     },
   });

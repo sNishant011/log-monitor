@@ -1,5 +1,5 @@
 import { Button, Card, Col, Divider, Result, Row, Spin, Statistic } from "antd";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CountUp from "react-countup";
 import { HttpError, useCan, useCustom, useResource } from "@refinedev/core";
 import { prettyResponse } from "../../types";
@@ -7,17 +7,16 @@ import PieChart from "../../components/visualizations/PieChart";
 import BarChart from "../../components/visualizations/BarChart";
 import Title from "antd/es/typography/Title";
 import LineGraph from "../../components/visualizations/LineGraph";
-import "./style.scss";
 import { valueType } from "antd/es/statistic/utils";
+import { dashboardHeaderStyle } from "../../utils";
 
-export const Dashboard = () => {
+export const NginxDashboard = () => {
   const Formatter = (value: valueType): React.ReactNode => (
     <CountUp end={parseInt(value as string)} separator="," />
   );
-  const { serverType } = useParams();
   const { data } = useCustom<prettyResponse, HttpError>({
     method: "get",
-    url: `${serverType}-logs/pretty`,
+    url: `nginx-logs/pretty`,
   });
 
   const canAccessNginxLogs = useCan({
@@ -25,19 +24,12 @@ export const Dashboard = () => {
     action: "list",
   }).data?.can;
 
-  const canAccessApacheLogs = useCan({
-    resource: "apache-dashboard",
-    action: "list",
-  }).data?.can;
   const s = useResource();
   const navigate = useNavigate();
   if (
-    (s?.resource?.name === "nginx-dashboard" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessNginxLogs) ||
-    (s.resource?.name === "apache-dashboard" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessApacheLogs)
+    s?.resource?.name === "nginx-dashboard" &&
+    typeof canAccessNginxLogs !== "undefined" &&
+    !canAccessNginxLogs
   ) {
     return (
       <Result
@@ -53,19 +45,15 @@ export const Dashboard = () => {
     );
   }
 
-  if (serverType && serverType !== "nginx" && serverType !== "apache") {
-    return <Navigate to={"/404"} />;
-  }
-
   if (!data?.data) {
     return <Spin size="large" />;
   }
 
   return (
-    <div className="dashboard">
-      <div className="content_head">
-        <Title>{serverType === "apache" ? "Apache Logs" : "Nginx Logs"}</Title>
-        <Link to={`/logs/${serverType}/raw`}>View Raw</Link>
+    <div>
+      <div style={dashboardHeaderStyle}>
+        <Title>Nginx Logs</Title>
+        <Link to={`/logs/nginx/raw`}>View Raw</Link>
       </div>
       <Row gutter={16} style={{ maxWidth: "600px" }}>
         <Col span={24} md={12}>
