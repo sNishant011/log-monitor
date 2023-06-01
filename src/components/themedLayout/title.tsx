@@ -22,3 +22,4 @@ const Title: FC<TitleProps> = ({ collapsed }) => {
 };
 
 export default Title;
+

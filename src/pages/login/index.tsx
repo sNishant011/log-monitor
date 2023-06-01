@@ -1,5 +1,5 @@
 import { AuthPage } from "@refinedev/antd";
-import Title from "../../components/title";
+import Title from "../../components/themedLayout/title";
 
 export const Login = () => {
   return (

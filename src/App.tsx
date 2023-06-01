@@ -14,7 +14,6 @@ import { ColorModeContextProvider } from "./contexts/color-mode";
 import { Register } from "./pages/register";
 import { Login } from "./pages/login";
 import { ForgotPassword } from "./pages/forgotPassword";
-import { Header } from "./components/header";
 import { UsersList } from "./pages/users";
 
 import { authProvider } from "./providers/authProvider";
@@ -22,9 +21,11 @@ import { CustomDataProvider } from "./providers/dataProvider";
 import { UserEdit } from "./pages/users/edit";
 import { UserShow } from "./pages/users/show";
 import { UserCreate } from "./pages/users/create";
-import Title from "./components/title";
 import { Dashboard } from "./pages/dashboard";
 import { RawLogList } from "./pages/raw-logs/list";
+import { ThemedSiderV2 } from "./components/themedLayout/sider";
+import Title from "./components/themedLayout/title";
+import { Header } from "./components/themedLayout";
 
 function App() {
   return (
@@ -98,7 +99,7 @@ function App() {
               <Route
                 element={
                   <Authenticated fallback={<CatchAllNavigate to="/login" />}>
-                    <ThemedLayoutV2 Title={Title} Header={Header}>
+                    <ThemedLayoutV2 Sider={ThemedSiderV2} Title={Title} Header={Header}>
                       <Outlet />
                     </ThemedLayoutV2>
                   </Authenticated>

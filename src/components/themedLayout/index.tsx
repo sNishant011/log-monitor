@@ -1,21 +1,22 @@
 import type { RefineThemedLayoutV2HeaderProps } from "@refinedev/antd";
+import { BsCloudMoonFill, BsFillEmojiSunglassesFill } from "react-icons/bs";
 import { useGetIdentity } from "@refinedev/core";
-import { Layout as AntdLayout, Avatar, Space, Switch, Typography, theme } from "antd";
+import { Layout as AntdLayout, Space, Switch, theme, Tag } from "antd";
 import React, { useContext } from "react";
 import { ColorModeContext } from "../../contexts/color-mode";
+import { getTagColor } from "../../utils";
 
-const { Text } = Typography;
 const { useToken } = theme;
 
-type IUser = {
-  id: number;
-  name: string;
-  avatar: string;
+type User = {
+  _id?: string;
+  email: string;
+  role: "admin" | "apache" | "nginx";
 };
 
 export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({ sticky }) => {
   const { token } = useToken();
-  const { data: user } = useGetIdentity<IUser>();
+  const { data: user } = useGetIdentity<User>();
   const { mode, setMode } = useContext(ColorModeContext);
 
   const headerStyles: React.CSSProperties = {
@@ -37,14 +38,15 @@ export const Header: React.FC<RefineThemedLayoutV2HeaderProps> = ({ sticky }) =>
     <AntdLayout.Header style={headerStyles}>
       <Space>
         <Switch
-          checkedChildren="🌛"
-          unCheckedChildren="🔆"
+          checkedChildren={<BsCloudMoonFill fontSize={"1.05rem"} />}
+          unCheckedChildren={<BsFillEmojiSunglassesFill />}
           onChange={() => setMode(mode === "light" ? "dark" : "light")}
           defaultChecked={mode === "dark"}
         />
         <Space style={{ marginLeft: "8px" }} size="middle">
-          {user?.name && <Text strong>{user.name}</Text>}
-          {user?.avatar && <Avatar src={user?.avatar} alt={user?.name} />}
+          {user?.role && (
+            <Tag color={getTagColor(user.role)}>{user.role.toUpperCase()}</Tag>
+          )}
         </Space>
       </Space>
     </AntdLayout.Header>
