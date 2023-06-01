@@ -73,7 +73,7 @@ export const authProvider: AuthBindings = {
       return Promise.resolve(JSON.parse(userLocal));
     } else {
       return axiosInstance
-        .get<User>("/users/profile")
+        .get<User>("users/profile")
         .then((response) => {
           localStorage.setItem(USER_KEY, JSON.stringify(response.data));
           return response.data;

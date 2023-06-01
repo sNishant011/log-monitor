@@ -3,6 +3,7 @@ import { HttpError, IResourceComponentsProps, useShow } from "@refinedev/core";
 import { Show, TagField, EmailField, TextField } from "@refinedev/antd";
 import { Typography } from "antd";
 import { User } from "../../types";
+import { getTagColor } from "../../utils";
 
 const { Title } = Typography;
 
@@ -19,10 +20,7 @@ export const UserShow: React.FC<IResourceComponentsProps> = () => {
       <Title level={5}>Email</Title>
       <EmailField value={record?.email} />
       <Title level={5}>Role</Title>
-      <TagField
-        value={record?.role}
-        color={record?.role === "admin" ? "blue" : "orange"}
-      />
+      {record?.role && <TagField value={record?.role} color={getTagColor(record.role)} />}
     </Show>
   );
 };

@@ -8,10 +8,12 @@ import BarChart from "../../components/visualizations/BarChart";
 import Title from "antd/es/typography/Title";
 import LineGraph from "../../components/visualizations/LineGraph";
 import "./style.scss";
-
-const formatter = (value: number) => <CountUp end={value} separator="," />;
+import { valueType } from "antd/es/statistic/utils";
 
 export const Dashboard = () => {
+  const Formatter = (value: valueType): React.ReactNode => (
+    <CountUp end={parseInt(value as string)} separator="," />
+  );
   const { serverType } = useParams();
   const { data } = useCustom<prettyResponse, HttpError>({
     method: "get",
@@ -71,7 +73,7 @@ export const Dashboard = () => {
             <Statistic
               title="Total Events"
               value={data.data.count}
-              formatter={formatter}
+              formatter={Formatter}
             />
           </Card>
         </Col>
@@ -81,7 +83,7 @@ export const Dashboard = () => {
               title="Unique IP Address"
               value={data.data.uniqueIPCount}
               precision={2}
-              formatter={formatter}
+              formatter={Formatter}
             />
           </Card>
         </Col>

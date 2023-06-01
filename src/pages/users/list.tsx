@@ -8,6 +8,7 @@ import {
 } from "@refinedev/antd";
 import { Space, Table } from "antd";
 import { User } from "../../types";
+import { getTagColor } from "../../utils";
 
 export const UsersList: React.FC = () => {
   const { tableProps } = useTable<User>({
@@ -21,9 +22,7 @@ export const UsersList: React.FC = () => {
         <Table.Column
           dataIndex="role"
           title="Role"
-          render={(role) => (
-            <TagField value={role} color={role === "admin" ? "blue" : "orange"} />
-          )}
+          render={(role) => <TagField value={role} color={getTagColor(role)} />}
         />
         <Table.Column<User>
           title={"Actions"}
