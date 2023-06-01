@@ -98,7 +98,11 @@ export const Dashboard = () => {
         </Col>
         <Col span={24} md={12}>
           <Card bordered={false}>
-            <BarChart data={data?.data.mostCommonIP} title={"IP Address"} />
+            <BarChart
+              data={data?.data.mostCommonIP}
+              title={"IP Address"}
+              xLabel={"IPs"}
+            />
           </Card>
         </Col>
       </Row>
@@ -112,7 +116,7 @@ export const Dashboard = () => {
         </Col>
         <Col span={24} md={12}>
           <Card bordered={false}>
-            <BarChart data={data?.data.mostCommonHTTPMethod} />
+            <BarChart data={data?.data.mostCommonHTTPMethod} xLabel={"HTTP Methods"} />
           </Card>
         </Col>
       </Row>

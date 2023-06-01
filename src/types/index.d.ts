@@ -30,3 +30,54 @@ export type prettyResponse = {
   requestCountByResponseSize: valueCount[];
   requestCountByUserAgent: valueCount[];
 };
+
+export interface Log {
+  file: File;
+}
+
+export interface File {
+  path: string;
+}
+
+export interface Event {
+  original: string;
+}
+
+export interface Host {
+  name: string;
+}
+
+export interface LogDocument {
+  _id: string;
+
+  log: Log;
+
+  bytes: string;
+
+  http_method: string;
+
+  "@timestamp": string;
+
+  message: string;
+
+  remote_ip: string;
+
+  timestamp: string;
+
+  response_code: string;
+
+  referrer: string;
+
+  event: Event;
+
+  user_agent: string;
+
+  "@version": string;
+
+  tags: string[];
+
+  host: Host;
+
+  http_version: string;
+  request_path: string;
+}

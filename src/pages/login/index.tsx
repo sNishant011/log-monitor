@@ -9,7 +9,7 @@ export const Login = () => {
       forgotPasswordLink={""}
       registerLink={""}
       formProps={{
-        initialValues: { email: "admin@admin.com", password: "Admin@011#" },
+        initialValues: { email: "user@admin.com", password: "Admin@011#" },
       }}
       rememberMe={false}
     />

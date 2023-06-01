@@ -1,13 +1,64 @@
 import React from "react";
-import { IResourceComponentsProps, useCan, useResource } from "@refinedev/core";
+import {
+  CrudFilters,
+  HttpError,
+  IResourceComponentsProps,
+  useCan,
+  useResource,
+} from "@refinedev/core";
 import { useTable, List } from "@refinedev/antd";
-import { Button, Card, DatePicker, Divider, Form, Input, Result, Table } from "antd";
+import {
+  Button,
+  Card,
+  DatePicker,
+  DatePickerProps,
+  Divider,
+  Form,
+  Input,
+  Result,
+  Table,
+} from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { LogDocument } from "../../types";
 
 export const RawLogList: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps, searchFormProps } = useTable({
+  const { tableProps, searchFormProps } = useTable<
+    LogDocument,
+    HttpError,
+    {
+      ipAddress: string;
+      timestamp: DatePickerProps["value"];
+    }
+  >({
     syncWithLocation: true,
+    onSearch: (params) => {
+      const filters: CrudFilters = [];
+      const { timestamp, ipAddress } = params;
+      console.log(ipAddress);
+
+      const shortMonth = timestamp?.toDate().toLocaleString("en-US", { month: "short" });
+      filters.push({
+        field: "ipAddress",
+        operator: "eq",
+        value: ipAddress,
+      });
+
+      const requiredTimestampFormat = `${timestamp
+        ?.date()
+        .toString()
+        .padStart(2, "0")}/${shortMonth}/${timestamp?.year()}:${timestamp
+        ?.hour()
+        .toString()
+        .padStart(2, "0")}:${timestamp?.minute().toString().padStart(2, "0")}`;
+
+      filters.push({
+        field: "date",
+        operator: "eq",
+        value: requiredTimestampFormat,
+      });
+      return filters;
+    },
   });
 
   const canAccessNginxLogs = useCan({
@@ -47,11 +98,15 @@ export const RawLogList: React.FC<IResourceComponentsProps> = () => {
     <List>
       <Card style={{ maxWidth: "400px" }}>
         <Form layout="vertical" {...searchFormProps}>
-          <Form.Item label="Search" name="q">
+          <Form.Item label="Search" name="ipAddress">
             <Input placeholder="IP Address" prefix={<SearchOutlined />} />
           </Form.Item>
           <Form.Item label="Timestamp" name="timestamp">
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              showTime={true}
+              format={"YYYY-MM-DD HH:mm"}
+              style={{ width: "100%" }}
+            />
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary">
