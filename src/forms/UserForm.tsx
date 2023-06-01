@@ -57,7 +57,8 @@ const UserForm = ({
               style={{ width: "100%" }}
               options={[
                 { label: "Admin", value: "admin" },
-                { label: "User", value: "user" },
+                { label: "Apache", value: "apache" },
+                { label: "Nginx", value: "nginx" },
               ]}
             />
           </Form.Item>

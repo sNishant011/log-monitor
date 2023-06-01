@@ -26,6 +26,7 @@ import { RawLogList } from "./pages/raw-logs/list";
 import { ThemedSiderV2 } from "./components/themedLayout/sider";
 import Title from "./components/themedLayout/title";
 import { Header } from "./components/themedLayout";
+import { accessControlProvider } from "./providers/accessControlProvider";
 
 function App() {
   return (
@@ -37,23 +38,24 @@ function App() {
             notificationProvider={notificationProvider}
             routerProvider={routerBindings}
             authProvider={authProvider}
+            accessControlProvider={accessControlProvider}
             resources={[
               {
-                name: "apache-logs",
+                name: "apache",
                 options: {
                   label: "Apache Logs",
                 },
               },
               {
-                name: "dashboard",
+                parentName: "apache",
+                name: "apache-dashboard",
                 list: "/logs/apache",
-                parentName: "apache-logs",
                 options: {
                   label: "Dashboard",
                 },
               },
               {
-                parentName: "apache-logs",
+                parentName: "apache",
                 name: "apache-logs",
                 list: "/logs/apache/raw",
                 options: {
@@ -61,21 +63,21 @@ function App() {
                 },
               },
               {
-                name: "nginx-logs",
+                name: "nginx",
                 options: {
                   label: "Nginx Logs",
                 },
               },
               {
-                name: "dashboard",
-                parentName: "nginx-logs",
+                parentName: "nginx",
+                name: "nginx-dashboard",
                 list: "/logs/nginx",
                 options: {
                   label: "Dashboard",
                 },
               },
               {
-                parentName: "nginx-logs",
+                parentName: "nginx",
                 name: "nginx-logs",
                 list: "/logs/nginx/raw",
                 options: {

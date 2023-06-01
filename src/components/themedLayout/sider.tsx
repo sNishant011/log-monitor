@@ -1,4 +1,4 @@
-import React, { CSSProperties } from "react";
+import React, { CSSProperties, useState } from "react";
 import {
   useTranslate,
   useLogout,
@@ -24,7 +24,7 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { Layout, Menu, Grid, Drawer, Button, theme } from "antd";
+import { Layout, Menu, Grid, Drawer, Button, theme, Modal } from "antd";
 import type { RefineThemedLayoutV2SiderProps } from "@refinedev/antd";
 
 const drawerButtonStyles: CSSProperties = {
@@ -134,10 +134,25 @@ export const ThemedSiderV2: React.FC<RefineThemedLayoutV2SiderProps> = ({
     }
   };
 
+  const [open, setOpen] = useState(false);
+
   const logout = isExistAuthentication && (
-    <Menu.Item key="logout" onClick={() => handleLogout()} icon={<LogoutOutlined />}>
-      {translate("buttons.logout", "Logout")}
-    </Menu.Item>
+    <>
+      <Menu.Item key="logout" onClick={() => setOpen(true)} icon={<LogoutOutlined />}>
+        {translate("buttons.logout", "Logout")}
+      </Menu.Item>
+      <Modal
+        title="Confirm Logout"
+        open={open}
+        onOk={handleLogout}
+        onCancel={() => setOpen(false)}
+        width={"300px"}
+        okText={"Confirm Logout"}
+        okType={"danger"}
+      >
+        Please confirm logout!
+      </Modal>
+    </>
   );
 
   const dashboard = hasDashboard ? (

@@ -1,5 +1,5 @@
 import { DataProvider, LogicalFilter } from "@refinedev/core";
-import { AxiosInstance } from "axios";
+import { AxiosError, AxiosInstance } from "axios";
 import { API_URL } from "../constants";
 import axiosInstance from "../utils/axiosInstance";
 
@@ -15,11 +15,16 @@ export const CustomDataProvider = (
     } else {
       url = `/${resource}`;
     }
-    const { data } = await httpClient.get(url);
-    return {
-      data,
-      total: data.length,
-    };
+    try {
+      const { data } = await httpClient.get(url);
+      return Promise.resolve({
+        data,
+        total: data.length,
+      });
+    } catch (e) {
+      console.log(e);
+      return Promise.reject((e as AxiosError)?.response?.data);
+    }
   },
   create: async ({ resource, variables }) => {
     const url = `/${resource}/`;

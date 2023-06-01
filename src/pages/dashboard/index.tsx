@@ -1,7 +1,7 @@
-import { Card, Col, Divider, Row, Spin, Statistic } from "antd";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Button, Card, Col, Divider, Result, Row, Spin, Statistic } from "antd";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import CountUp from "react-countup";
-import { HttpError, useCustom } from "@refinedev/core";
+import { HttpError, useCan, useCustom, useResource } from "@refinedev/core";
 import { prettyResponse } from "../../types";
 import PieChart from "../../components/visualizations/PieChart";
 import BarChart from "../../components/visualizations/BarChart";
@@ -17,12 +17,48 @@ export const Dashboard = () => {
     method: "get",
     url: `${serverType}-logs/pretty`,
   });
+
+  const canAccessNginxLogs = useCan({
+    resource: "nginx-dashboard",
+    action: "list",
+  }).data?.can;
+
+  const canAccessApacheLogs = useCan({
+    resource: "apache-dashboard",
+    action: "list",
+  }).data?.can;
+  const s = useResource();
+  const navigate = useNavigate();
+  if (
+    (s?.resource?.name === "nginx-dashboard" &&
+      typeof canAccessNginxLogs !== "undefined" &&
+      !canAccessNginxLogs) ||
+    (s.resource?.name === "apache-dashboard" &&
+      typeof canAccessNginxLogs !== "undefined" &&
+      !canAccessApacheLogs)
+  ) {
+    return (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Sorry, you are not authorized to access this page."
+        extra={
+          <Button type="primary" onClick={() => navigate("/")}>
+            Back Home
+          </Button>
+        }
+      />
+    );
+  }
+
   if (serverType && serverType !== "nginx" && serverType !== "apache") {
     return <Navigate to={"/404"} />;
   }
+
   if (!data?.data) {
     return <Spin size="large" />;
   }
+
   return (
     <div className="dashboard">
       <div className="content_head">
