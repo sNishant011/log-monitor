@@ -6,7 +6,9 @@ import {
   ShowButton,
   useTable,
 } from "@refinedev/antd";
+import { useCan } from "@refinedev/core";
 import { Space, Table } from "antd";
+import UnAuthorizedPage from "../../components/UnAuthorizedPage";
 import { User } from "../../types";
 import { getTagColor } from "../../utils";
 
@@ -14,6 +16,15 @@ export const UsersList: React.FC = () => {
   const { tableProps } = useTable<User>({
     syncWithLocation: true,
   });
+
+  const canAccess = useCan({
+    resource: "user",
+    action: "list",
+  });
+
+  if (canAccess.data && !canAccess.data?.can) {
+    return <UnAuthorizedPage />;
+  }
 
   return (
     <List>

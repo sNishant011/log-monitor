@@ -1,9 +1,10 @@
 import React from "react";
-import { HttpError, IResourceComponentsProps, useShow } from "@refinedev/core";
+import { HttpError, IResourceComponentsProps, useCan, useShow } from "@refinedev/core";
 import { Show, TagField, EmailField, TextField } from "@refinedev/antd";
 import { Typography } from "antd";
 import { User } from "../../types";
 import { getTagColor } from "../../utils";
+import UnAuthorizedPage from "../../components/UnAuthorizedPage";
 
 const { Title } = Typography;
 
@@ -13,6 +14,14 @@ export const UserShow: React.FC<IResourceComponentsProps> = () => {
 
   const record = data?.data;
 
+  const canAccess = useCan({
+    resource: "user",
+    action: "show",
+  });
+
+  if (canAccess.data && !canAccess.data?.can) {
+    return <UnAuthorizedPage />;
+  }
   return (
     <Show isLoading={isLoading}>
       <Title level={5}>Id</Title>

@@ -1,5 +1,5 @@
-import { Button, Card, Col, Divider, Result, Row, Spin, Statistic } from "antd";
-import { Link, useNavigate } from "react-router-dom";
+import { Card, Col, Divider, Row, Spin, Statistic } from "antd";
+import { Link } from "react-router-dom";
 import CountUp from "react-countup";
 import { HttpError, useCan, useCustom, useResource } from "@refinedev/core";
 import { prettyResponse } from "../../types";
@@ -9,6 +9,7 @@ import Title from "antd/es/typography/Title";
 import LineGraph from "../../components/visualizations/LineGraph";
 import { valueType } from "antd/es/statistic/utils";
 import { dashboardHeaderStyle } from "../../utils";
+import UnAuthorizedPage from "../../components/UnAuthorizedPage";
 
 export const ApacheDashboard = () => {
   const Formatter = (value: valueType): React.ReactNode => (
@@ -25,24 +26,12 @@ export const ApacheDashboard = () => {
   }).data?.can;
 
   const s = useResource();
-  const navigate = useNavigate();
   if (
     s?.resource?.name === "apache-dashboard" &&
     typeof canAccessApacheLogs !== "undefined" &&
     !canAccessApacheLogs
   ) {
-    return (
-      <Result
-        status="403"
-        title="403"
-        subTitle="Sorry, you are not authorized to access this page."
-        extra={
-          <Button type="primary" onClick={() => navigate("/")}>
-            Back Home
-          </Button>
-        }
-      />
-    );
+    return <UnAuthorizedPage />;
   }
 
   if (!data?.data) {
