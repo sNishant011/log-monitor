@@ -61,11 +61,6 @@ export const ApacheLogList: React.FC<IResourceComponentsProps> = () => {
     },
   });
 
-  const canAccessNginxLogs = useCan({
-    resource: "nginx-logs",
-    action: "list",
-  }).data?.can;
-
   const canAccessApacheLogs = useCan({
     resource: "apache-logs",
     action: "list",
@@ -73,12 +68,9 @@ export const ApacheLogList: React.FC<IResourceComponentsProps> = () => {
   const s = useResource();
   const navigate = useNavigate();
   if (
-    (s?.resource?.name === "nginx-logs" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessNginxLogs) ||
-    (s.resource?.name === "apache-logs" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessApacheLogs)
+    s.resource?.name === "apache-logs" &&
+    typeof canAccessApacheLogs !== "undefined" &&
+    !canAccessApacheLogs
   ) {
     return (
       <Result

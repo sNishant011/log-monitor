@@ -66,19 +66,12 @@ export const NginxLogList: React.FC<IResourceComponentsProps> = () => {
     action: "list",
   }).data?.can;
 
-  const canAccessApacheLogs = useCan({
-    resource: "apache-logs",
-    action: "list",
-  }).data?.can;
   const s = useResource();
   const navigate = useNavigate();
   if (
-    (s?.resource?.name === "nginx-logs" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessNginxLogs) ||
-    (s.resource?.name === "apache-logs" &&
-      typeof canAccessNginxLogs !== "undefined" &&
-      !canAccessApacheLogs)
+    s?.resource?.name === "nginx-logs" &&
+    typeof canAccessNginxLogs !== "undefined" &&
+    !canAccessNginxLogs
   ) {
     return (
       <Result
