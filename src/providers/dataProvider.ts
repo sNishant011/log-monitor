@@ -8,15 +8,22 @@ export const CustomDataProvider = (
   httpClient: AxiosInstance = axiosInstance,
 ): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => ({
   getList: async ({ resource, filters, pagination }) => {
-    const filter: LogicalFilter = filters?.at(0) as LogicalFilter;
+    let queryString = "";
+    (filters as LogicalFilter[]).forEach((filter, index) => {
+      if (index > 0) {
+        queryString += "&";
+      }
+      queryString += `${filter.field}=${filter.value}`;
+    });
+    console.log(queryString);
     let url;
-    if (filter) {
-      url = `/${resource}/?${filter.field}=${filter.value}`;
+    if (queryString) {
+      url = `/${resource}?${queryString}`;
     } else {
       url = `/${resource}`;
     }
     if (pagination) {
-      if (!filter) {
+      if (!queryString) {
         url = url.concat("?");
       } else {
         url = url.concat("&");

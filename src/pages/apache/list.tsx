@@ -1,8 +1,9 @@
 import React from "react";
+import dayjs from "../../utils/dayjs";
 import {
-  CrudFilters,
   HttpError,
   IResourceComponentsProps,
+  LogicalFilter,
   useCan,
   useResource,
 } from "@refinedev/core";
@@ -23,7 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { LogDocument } from "../../types";
 
 export const ApacheLogList: React.FC<IResourceComponentsProps> = () => {
-  const { tableProps, searchFormProps } = useTable<
+  const { tableProps, searchFormProps, filters } = useTable<
     LogDocument,
     HttpError,
     {
@@ -31,36 +32,32 @@ export const ApacheLogList: React.FC<IResourceComponentsProps> = () => {
       timestamp: DatePickerProps["value"];
     }
   >({
-    syncWithLocation: true,
     onSearch: (params) => {
-      const filters: CrudFilters = [];
+      const filters: LogicalFilter[] = [];
       const { timestamp, ipAddress } = params;
-
-      const shortMonth = timestamp?.toDate().toLocaleString("en-US", { month: "short" });
       filters.push({
         field: "ipAddress",
         operator: "eq",
         value: ipAddress,
       });
-      if (timestamp) {
-        const requiredTimestampFormat = `${timestamp
-          ?.date()
-          .toString()
-          .padStart(2, "0")}/${shortMonth}/${timestamp?.year()}:${timestamp
-          ?.hour()
-          .toString()
-          .padStart(2, "0")}:${timestamp?.minute().toString().padStart(2, "0")}`;
-
-        filters.push({
-          field: "date",
-          operator: "eq",
-          value: requiredTimestampFormat,
-        });
-      }
+      filters.push({
+        field: "date",
+        operator: "eq",
+        value: timestamp?.format("DD/MMM/YYYY:HH:mm"),
+      });
       return filters;
     },
   });
 
+  const prevTime = (filters as LogicalFilter[]).find(
+    (filter) => filter.field === "date",
+  )?.value;
+  const initialFilterFormValues = {
+    ipAddress: (filters as LogicalFilter[]).find((filter) => filter.field === "ipAddress")
+      ?.value,
+    timestamp: prevTime ? dayjs(prevTime, "DD/MMM/YYYY:HH:mm") : undefined,
+  };
+  searchFormProps.initialValues = initialFilterFormValues;
   const canAccessApacheLogs = useCan({
     resource: "apache-logs",
     action: "list",
@@ -85,7 +82,6 @@ export const ApacheLogList: React.FC<IResourceComponentsProps> = () => {
       />
     );
   }
-
   return (
     <List>
       <Card style={{ maxWidth: "400px" }}>
