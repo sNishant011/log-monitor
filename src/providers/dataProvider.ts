@@ -7,7 +7,7 @@ export const CustomDataProvider = (
   apiUrl?: string,
   httpClient: AxiosInstance = axiosInstance,
 ): Omit<Required<DataProvider>, "createMany" | "updateMany" | "deleteMany"> => ({
-  getList: async ({ resource, filters }) => {
+  getList: async ({ resource, filters, pagination }) => {
     const filter: LogicalFilter = filters?.at(0) as LogicalFilter;
     let url;
     if (filter) {
@@ -15,11 +15,19 @@ export const CustomDataProvider = (
     } else {
       url = `/${resource}`;
     }
+    if (pagination) {
+      if (!filter) {
+        url = url.concat("?");
+      } else {
+        url = url.concat("&");
+      }
+      url = url.concat(`current=${pagination.current}&pageSize=${pagination.pageSize}`);
+    }
     try {
       const { data } = await httpClient.get(url);
       return Promise.resolve({
-        data,
-        total: data.length,
+        data: data.data,
+        total: data.total,
       });
     } catch (e) {
       console.log(e);
